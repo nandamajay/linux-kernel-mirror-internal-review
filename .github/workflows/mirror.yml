@@ -1,0 +1,28 @@
+name: Mirror Linux Kernel
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Every Sunday at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Git
+        run: sudo apt-get update && sudo apt-get install -y git
+
+      - name: Clone Upstream Kernel
+        run: |
+          git clone --mirror https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git linux.git
+
+      - name: Push to GitHub Mirror
+        run: |
+          cd linux.git
+          git remote add github https://github.com/nandamajay/linux-kernel-mirror-internal-review.git
+          git push --mirror github
+        env:
+          GIT_ASKPASS: /bin/echo
+          GIT_USERNAME: ${{ secrets.GH_TOKEN }}
+          GIT_PASSWORD: ${{ secrets.GH_TOKEN }}
