@@ -20,9 +20,5 @@ jobs:
       - name: Push to GitHub Mirror
         run: |
           cd linux.git
-          git remote add github https://github.com/nandamajay/linux-kernel-mirror-internal-review.git
-          git push --mirror github
-        env:
-          GIT_ASKPASS: /bin/echo
-          GIT_USERNAME: ${{ secrets.GH_TOKEN }}
-          GIT_PASSWORD: ${{ secrets.GH_TOKEN }}
+          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/nandamajay/linux-kernel-mirror-internal-review.git
+          git push --mirror
